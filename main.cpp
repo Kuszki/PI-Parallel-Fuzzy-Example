@@ -22,10 +22,62 @@
 
 #include "fuzzyalgorithm.hpp"
 
+#define N 100000
 
 int main(int argc, char *argv[])
 {
 	QCoreApplication a(argc, argv);
+	FuzzyAlgorithm fuzzy;
+
+	double A[N], B[N];
+
+	qsrand(QDateTime::currentSecsSinceEpoch());
+
+	for (int i = 0; i < N; ++i)
+	{
+		A[i] = 3.0 * double(qrand()) / double(RAND_MAX) - 1.5;
+		B[i] = 3.0 * double(qrand()) / double(RAND_MAX) - 1.5;
+	}
+
+	{
+		const QTime t = QTime::currentTime();
+
+		for (int i = 0; i < N; ++i) fuzzy.runAsyncMapped(A[i], B[i]);
+
+		const unsigned n = t.msecsTo(QTime::currentTime());
+
+		qDebug() << "runAsyncMapped:" << n;
+	}
+
+	{
+		const QTime t = QTime::currentTime();
+
+		for (int i = 0; i < N; ++i) fuzzy.runAsyncRun(A[i], B[i]);
+
+		const unsigned n = t.msecsTo(QTime::currentTime());
+
+		qDebug() << "runAsyncRun:" << n;
+	}
+
+	{
+		const QTime t = QTime::currentTime();
+
+		for (int i = 0; i < N; ++i) fuzzy.runAsyncOpenmp(A[i], B[i]);
+
+		const unsigned n = t.msecsTo(QTime::currentTime());
+
+		qDebug() << "runAsyncOpenmp:" << n;
+	}
+
+	{
+		const QTime t = QTime::currentTime();
+
+		for (int i = 0; i < N; ++i) fuzzy.runSync(A[i], B[i]);
+
+		const unsigned n = t.msecsTo(QTime::currentTime());
+
+		qDebug() << "runSync:" << n;
+	}
 
 	return 0;
 }
