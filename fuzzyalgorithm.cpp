@@ -95,17 +95,11 @@ double FuzzyAlgorithm::runAsyncOpenmp(double A, double B) const
 		vIn[i + sizeA] = inputMembersB[i]->value(B);
 	}
 
-	#pragma omp parallel for
+	#pragma omp parallel for reduction(+: value, members)
 	for (int i = 0; i < sizeO; ++i)
 	{
-		const double res = outputMembers[i](vIn);
-		const double val = res * singletonValues[i];
-
-		#pragma omp critical
-		{
-			value += val;
-			members += res;
-		}
+		members = outputMembers[i](vIn);
+		value = members * singletonValues[i];
 	}
 
 	return value / members;
