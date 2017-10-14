@@ -66,7 +66,11 @@ FuzzyAlgorithm::FuzzyAlgorithm(QObject* parent)
 	singletonValues = {-0.95, -0.35, -0.10, 0.20, 0.45, 0.90 };
 }
 
-FuzzyAlgorithm::~FuzzyAlgorithm(void) {}
+FuzzyAlgorithm::~FuzzyAlgorithm(void)
+{
+	for (auto& f : inputMembersA) delete f;
+	for (auto& f : inputMembersB) delete f;
+}
 
 double FuzzyAlgorithm::runAsyncOpenmp(double A, double B) const
 {
